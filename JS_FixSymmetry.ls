@@ -1,9 +1,10 @@
 // ******************************
-// Modeler LScript: Fix Symmetry on selected points
-// Version: 1.0
+// Modeler LScript: Fix Symmetry problems in the object
+// Version: 1.1
 // Author: Johan Steen
 // Date: 08 Sep 2008
-// Description: Corrects Symmetry on the selected points.
+// Modified: 12 Sep 2008
+// Description: Corrects Symmetry on the selected points, or finds symmetry problems if nothing is selected.
 //
 // http://www.artstorm.net
 // ******************************
@@ -15,7 +16,7 @@
 
 // global values go here
 c1,c2;
-reqTitle = "Fix Symmetry v1.0";
+reqTitle = "Fix Symmetry v1.1";
 
 main
 {
@@ -26,10 +27,10 @@ main
     switch (pnt)
     {
         case 0:
-            info ("You need to select at least 2 points.");
+            FindErrors();
             break;
         case 1:
-            info ("You need to select at least 2 points.");
+            info ("Nothing to perform with just one selected point.");
             break;
         case 2:             // 2 points selected, enter Quick Mode
             QuickMode();
@@ -39,6 +40,49 @@ main
             break;
     }
 }
+
+/*
+** Function to find Symmetry Errors (When no points are selected)
+**
+** @returns     Nothing 
+*/
+FindErrors
+{
+    totPnts = 0;
+    selPnts = nil;
+    selmode(USER);
+    editbegin();
+    // Create an array of all existing points
+    foreach(p, points)
+    {
+        totPnts++;
+        selPnts[totPnts] = p;
+    }
+    editend();
+
+    // Loop through all points and leave does without a syncing symmetry point selected
+    selpoint(SET);
+    moninit(totPnts, "processing...");
+    for(i=1; i <= totPnts; i++)
+    {
+        for (j=i; j <= totPnts; j++)
+        {
+            curPnt = selPnts[i];
+            if (curPnt.x == -selPnts[j].x && curPnt.y == selPnts[j].y && curPnt.z == selPnts[j].z && i != j || curPnt.x == 0)
+            {
+                selpoint(CLEAR, POINTID, selPnts[i]);
+                selpoint(CLEAR, POINTID, selPnts[j]);
+                j = totPnts;
+            }
+        } // Next
+        if (monstep()) {
+            //editend(ABORT);
+            return;
+        } // End If
+    } // Next
+    monend();
+}
+
 
 /*
 ** Function when ToleranceMode is detected (Correct all selected points)
@@ -211,4 +255,6 @@ refresh_c1: value
     if( value != getvalue(c1) )
         setvalue(c1, value);
 }
+
+
 

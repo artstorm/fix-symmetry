@@ -1,4 +1,4 @@
-Fix Symmetry 1.0
+Fix Symmetry 1.1
 ================
 LightWave Modeler LScript by Johan Steen.
 
@@ -61,6 +61,12 @@ selected, the longer the calculation to process the correction will be. If
 you find it takes too long time, press the ESC key to abort the processing
 and make a narrower selection of fewer points to work on.
 
+Find Errors Mode:
+If no points in the object are selected, the find errors mode will be invoked.
+The plugin then examines all points to see that they are in symmetric sync 
+with a point on the opposite x axis. Point's that aren't in sync will be 
+selected, so they can be fixed. Either manually or by using the Tolerance 
+Mode of this plugin.
 
 Misc:
 I'd recommend to add the tool to a convenient spot in your modeler's
@@ -84,6 +90,10 @@ Contact me through http://www.artstorm.net/
 
 History
 =======
+V1.1 - 12 Sep 2008
+  * Implemented a feature to locate symmetry errors. 
+    Activated when plugin is started with no points selected.
+
 v1.0 - 8 Sep 2008:
   * Release of version 1.0.
 
